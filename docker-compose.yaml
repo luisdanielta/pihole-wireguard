@@ -43,7 +43,7 @@ services:
       - "8800:80/tcp"
     environment:
       TZ: 'America/Bogota'
-      WEBPASSWORD: 'CAL9371focas?'
+      WEBPASSWORD: 'pwd'
     volumes:
       - '/home/luisdanielta/docker/pihole/etc-pihole/:/etc/pihole/'
       - '/home/luisdanielta/docker/pihole/etc-dnsmasq.d/:/etc/dnsmasq.d/'

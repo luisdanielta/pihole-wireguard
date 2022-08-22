@@ -1,0 +1,61 @@
+version: '2.1'
+services:
+  wireguard:
+    image: linuxserver/wireguard
+    container_name: wireguard
+    cap_add:
+      - NET_ADMIN
+      - SYS_MODULE
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=America/Bogota
+      - SERVERPORT=51820 #optional
+      - PEERS=4 #optional
+      - PEERDNS=auto #optional
+      - INTERNAL_SUBNET=10.13.13.0 #optional
+    volumes:
+      - /root/wireguard:/config
+      - /lib/modules:/lib/modules
+      - /usr/src:/usr/src
+    ports:
+      - 51820:51820/udp
+    dns:
+      - 172.20.0.7
+    restart: unless-stopped
+    networks:
+      containers:
+        ipv4_address: 172.20.0.6
+
+  pihole:
+    container_name: pihole
+    image: pihole/pihole:v5.7
+    expose:
+      - "53"
+      - "67"
+      - "80"
+      - "443"
+    ports:
+      - "53:53/tcp"
+      - "53:53/udp"
+      - "67:67/udp"
+      - "443:443/tcp"
+      - "8800:80/tcp"
+    environment:
+      TZ: 'America/Bogota'
+      WEBPASSWORD: 'CAL9371focas?'
+    volumes:
+      - '/home/luisdanielta/docker/pihole/etc-pihole/:/etc/pihole/'
+      - '/home/luisdanielta/docker/pihole/etc-dnsmasq.d/:/etc/dnsmasq.d/'
+    cap_add:
+      - NET_ADMIN
+    restart: unless-stopped
+    networks:
+      containers:
+        ipv4_address: 172.20.0.7
+
+networks:
+  containers:
+    ipam:
+      config:
+        - subnet: 172.20.0.0/24
